@@ -1,6 +1,6 @@
 ---
-title: "r_downloads"
-name: "r downloads of 2017-2018"
+title: "r downloads of 2017-2018"
+name: r_downloads
 owner: "qianwang2@usf.edu"
 metrics:
   downloads: 
@@ -81,7 +81,7 @@ package_year_metrics_create <- create_metrics(package_year_metrics)
 
 saveRDS(package_year_metrics_create, "package_year_metrics_create.rds")
 
-preview_metric(package_year_metrics_create)
+preview_metric(package_year_metrics_create$downloads_NA_downloads)
 
 ```
 
