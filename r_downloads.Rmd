@@ -1,0 +1,88 @@
+---
+title: "r_downloads"
+name: "r downloads of 2017-2018"
+owner: "qianwang2@usf.edu"
+metrics:
+  downloads: 
+    title: number of r downloads
+    description: number of r software downloads
+dimensions:
+  version:
+    title: r version
+    description: version of the r 
+  os:
+    title: operating system
+    description: operating system of the software
+  country:
+    title: country
+    description: country that the ip belongs to
+---
+
+```{r, echo=F}
+# remotes::install_github("ramnathv/tidymetrics")
+# remotes::install_github("ramnathv/shinybones")
+# remotes::install_github("ramnathv/shinymetrics")
+
+library(tidyverse)
+library(shinydashboard)
+library(tidymetrics)
+library(shinybones)
+library(shinymetrics)
+library(lubridate)
+```
+
+```{r}
+package_year <- 
+ read_csv("D:/github desktop/rcran_and_package/data/r_downloads_year.csv")
+
+downloads <- 
+ read_csv("D:/github desktop/rcran_and_package/data/r-downloads.csv")
+
+```
+
+
+```{r, echo=F}
+
+# set.seed(9955)
+
+package_year_clean <- 
+ package_year %>% 
+ select(-X1, -time, -ip_id, -size) %>% 
+ mutate(version = fct_lump(version, n = 10),
+        country = fct_lump(country, n = 10)) %>% 
+ drop_na() 
+
+# package_year_clean_sample <- 
+#  package_year_clean[sample(nrow(package_year_clean), 50000), ]
+
+
+package_year_metrics <-
+ package_year_clean %>% 
+ cross_by_dimensions(version, os, country) %>% 
+ cross_by_periods(c("month", "quarter")) %>% 
+ summarise(downloads = n()) %>% 
+ ungroup()
+ 
+```
+
+```{r, echo=F}
+## view metrics and plot based on metrics data
+package_year_metrics %>% 
+ filter(version != "All", os != "All", country == "All") %>% 
+ ggplot(., aes(x = version, y = downloads, fill = os)) +
+ geom_bar(stat = "identity")
+
+```
+
+```{r, echo=F}
+use_metrics_scaffold(package_year_metrics)
+
+package_year_metrics_create <- create_metrics(package_year_metrics)
+
+saveRDS(package_year_metrics_create, "package_year_metrics_create.rds")
+
+preview_metric(package_year_metrics_create)
+
+```
+
+
