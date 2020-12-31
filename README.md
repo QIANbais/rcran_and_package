@@ -5,12 +5,4 @@ Columns included: • Date
                   • Version
                   • os (operating system)
                   • country
-2. Packages: •
-             •
-             •
-             •
-             •
-             •
-             •
-             •
-3. Exploration
+2. Exploration: this project allows you to explore the package downloads in various ways.
